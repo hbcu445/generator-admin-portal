@@ -431,6 +431,39 @@
                 </div>
             </div>
 
+            <!-- Scoring Tab -->
+            <div id="scoring-tab" class="hidden">
+                <h2>Scoring Configuration</h2>
+                <div class="info-box">
+                    <strong>Manage Skill Level Score Ranges</strong>
+                </div>
+                
+                <div style="background: #0f172a; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <div id="scoring-levels-container" style="display: grid; gap: 20px;">
+                    </div>
+                    <button class="btn" onclick="saveScoringLevels()" style="background: #10b981; margin-top: 20px; width: 100%; max-width: 300px;">Save Scoring Configuration</button>
+                    <div id="scoring-message" style="margin-top: 15px;"></div>
+                </div>
+                
+                <div style="background: #1e293b; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h3 style="margin-bottom: 15px; color: #3b82f6;">Current Scoring Ranges</h3>
+                    <table class="table" style="font-size: 14px;">
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Name</th>
+                                <th>Min %</th>
+                                <th>Max %</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scoring-preview">
+                            <tr><td colspan="5">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Settings Tab -->
             <div id="settings-tab" class="hidden">
                 <h2>Settings</h2>
@@ -1200,6 +1233,84 @@
                 alert('Error removing admin user');
             }
         }
+
+        // Scoring Management Functions
+        let scoringLevels = [
+            { level: 1, level_name: 'Beginner', min_percentage: 25, max_percentage: 40, description: 'Basic understanding' },
+            { level: 2, level_name: 'Advanced', min_percentage: 41, max_percentage: 59, description: 'Intermediate knowledge' },
+            { level: 3, level_name: 'Pro', min_percentage: 60, max_percentage: 85, description: 'Advanced proficiency' },
+            { level: 4, level_name: 'Master', min_percentage: 86, max_percentage: 100, description: 'Expert-level knowledge' }
+        ];
+
+        function loadScoringLevels() {
+            const container = document.getElementById('scoring-levels-container');
+            container.innerHTML = '';
+            
+            scoringLevels.forEach((level, index) => {
+                const nextLevel = scoringLevels[index + 1];
+                const maxLimit = nextLevel ? nextLevel.min_percentage - 1 : 100;
+                
+                const html = `
+                    <div style="background: #1e293b; padding: 15px; border-radius: 6px; border-left: 4px solid #3b82f6;">
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">Level ${level.level}: ${level.level_name}</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>Minimum Score %</label>
+                                <input type="number" min="0" max="100" value="${level.min_percentage}" onchange="updateScoringLevel(${level.level}, 'min', this.value)" style="width: 100%; padding: 8px; background: #0f172a; border: 1px solid #334155; border-radius: 4px; color: white;">
+                            </div>
+                            <div class="form-group">
+                                <label>Maximum Score % (Max: ${maxLimit})</label>
+                                <input type="number" min="0" max="${maxLimit}" value="${level.max_percentage}" onchange="updateScoringLevel(${level.level}, 'max', this.value)" style="width: 100%; padding: 8px; background: #0f172a; border: 1px solid #334155; border-radius: 4px; color: white;">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label>Description</label>
+                            <input type="text" value="${level.description}" onchange="updateScoringLevel(${level.level}, 'description', this.value)" style="width: 100%; padding: 8px; background: #0f172a; border: 1px solid #334155; border-radius: 4px; color: white;">
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function updateScoringLevel(level, field, value) {
+            const levelObj = scoringLevels.find(l => l.level === level);
+            if (levelObj) {
+                if (field === 'min') levelObj.min_percentage = parseInt(value);
+                else if (field === 'max') levelObj.max_percentage = parseInt(value);
+                else if (field === 'description') levelObj.description = value;
+            }
+            updateScoringPreview();
+        }
+
+        function updateScoringPreview() {
+            const preview = document.getElementById('scoring-preview');
+            preview.innerHTML = scoringLevels.map(level => `
+                <tr>
+                    <td>${level.level}</td>
+                    <td>${level.level_name}</td>
+                    <td>${level.min_percentage}%</td>
+                    <td>${level.max_percentage}%</td>
+                    <td>${level.description}</td>
+                </tr>
+            `).join('');
+        }
+
+        function saveScoringLevels() {
+            // Save to localStorage for now
+            localStorage.setItem('scoringLevels', JSON.stringify(scoringLevels));
+            const messageDiv = document.getElementById('scoring-message');
+            messageDiv.innerHTML = '<span style="color: #10b981;">Scoring configuration saved successfully!</span>';
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 3000);
+        }
+
+        // Initialize scoring levels on page load
+        window.addEventListener('load', () => {
+            loadScoringLevels();
+            updateScoringPreview();
+        });
     </script>
 </body>
 </html>
