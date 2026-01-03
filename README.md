@@ -1,16 +1,140 @@
-# React + Vite
+# Generator Source Admin Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Professional admin dashboard for managing Generator Technician Knowledge Tests.
 
-Currently, two official plugins are available:
+## Architecture
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend:** React + Vite
+- **Backend:** Express.js
+- **Database:** Supabase (PostgreSQL)
+- **Authentication:** Supabase Auth
 
-## React Compiler
+## Setup & Recovery Instructions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
+- Node.js 18+
+- npm or yarn
 
-## Expanding the ESLint configuration
+### Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/hbcu445/generator-admin-portal.git
+   cd generator-admin-portal
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**
+   Create a `.env` file with:
+   ```
+   SUPABASE_URL=https://nnaakuspoqjdyzheklyb.supabase.co
+   SUPABASE_KEY=your_supabase_anon_key
+   PORT=3000
+   NODE_ENV=production
+   ```
+
+4. **Build the frontend**
+   ```bash
+   npm run build
+   ```
+
+5. **Start the server**
+   ```bash
+   npm start
+   ```
+
+   Or for development:
+   ```bash
+   npm run dev
+   ```
+
+### Project Structure
+
+```
+generator-admin-portal/
+├── src/
+│   ├── pages/
+│   │   ├── LoginPage.jsx
+│   │   └── DashboardPage.jsx
+│   ├── components/
+│   │   ├── ApplicantsTab.jsx
+│   │   ├── TestSessionsTab.jsx
+│   │   ├── ResultsTab.jsx
+│   │   ├── BranchesTab.jsx
+│   │   └── ActivityLogTab.jsx
+│   ├── App.jsx
+│   └── main.jsx
+├── server.js (Express backend)
+├── package.json
+├── vite.config.js
+└── netlify.toml
+```
+
+### Features
+
+- **Admin Authentication:** Secure login with Supabase Auth
+- **Applicant Management:** Add, view, and delete test applicants
+- **Test Sessions:** Create and manage test sessions for applicants
+- **Results Analytics:** View test results with filtering and statistics
+- **Branch Management:** Manage multiple branch locations (admin only)
+- **Activity Logging:** Track all admin actions
+
+### API Endpoints
+
+- `POST /api/auth/login` - Admin login
+- `GET /api/data/:table` - Fetch data from any table
+- `POST /api/data/:table` - Create new records
+- `DELETE /api/data/:table/:id` - Delete records
+
+### Recovery & Rebuild
+
+If you need to rebuild the project:
+
+1. **Clear build artifacts**
+   ```bash
+   rm -rf dist node_modules
+   npm install
+   ```
+
+2. **Rebuild frontend**
+   ```bash
+   npm run build
+   ```
+
+3. **Start server**
+   ```bash
+   npm start
+   ```
+
+### Deployment
+
+The project is configured for deployment on Netlify or similar platforms.
+
+**Netlify Configuration:**
+- Build command: `npm run build`
+- Publish directory: `dist`
+- Environment variables: Set `SUPABASE_URL` and `SUPABASE_KEY` in Netlify dashboard
+
+### Troubleshooting
+
+**Build fails with module not found:**
+- Run `npm install` to ensure all dependencies are installed
+- Clear node_modules: `rm -rf node_modules && npm install`
+
+**Server won't start:**
+- Check that port 3000 is available
+- Verify environment variables are set correctly
+- Check server logs for errors
+
+**Authentication issues:**
+- Verify Supabase credentials
+- Ensure admin user exists in Supabase
+- Check browser console for error messages
+
+### Support
+
+For issues or questions, refer to the Supabase documentation or contact the development team.
