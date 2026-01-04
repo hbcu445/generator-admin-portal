@@ -127,7 +127,7 @@ export default function App() {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/results?order=created_at.desc`, {
         headers: {
           'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
+          'Authorization': `Bearer ${token}`
         }
       })
       const data = await response.json()
@@ -142,7 +142,7 @@ export default function App() {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/questions?order=question_number.asc`, {
         headers: {
           'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
+          'Authorization': `Bearer ${token}`
         }
       })
       const data = await response.json()
@@ -157,7 +157,7 @@ export default function App() {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/admin_users?order=created_at.desc`, {
         headers: {
           'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
+          'Authorization': `Bearer ${token}`
         }
       })
       const data = await response.json()
@@ -179,7 +179,7 @@ export default function App() {
         method: 'POST',
         headers: {
           'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -215,7 +215,7 @@ export default function App() {
         method: 'DELETE',
         headers: {
           'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
+          'Authorization': `Bearer ${token}`
         }
       })
 
