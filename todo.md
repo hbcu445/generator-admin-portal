@@ -17,3 +17,12 @@
 - [x] Update admin portal to show Test Sessions tab with all 11 fields: Name, Email, Phone, Location, Level, Date, Score, Time (min), Passed, Report PDF, Certificate PDF
 - [x] Remove unnecessary tabs: Applicants and Results (merged into Test Sessions)
 - [x] Keep tabs: Dashboard, Test Sessions, Questions, Scoring, Settings
+
+## PDF Generation Issues (New - Jan 4, 2026)
+- [ ] Investigate test app PDF generation implementation
+- [ ] Check if report_pdf and certificate_pdf columns exist in results table
+- [ ] Implement PDF generation for test reports
+- [ ] Implement PDF generation for certificates (passing tests only)
+- [ ] Store PDFs in accessible location (Supabase Storage or CDN)
+- [ ] Update database with real PDF URLs
+- [ ] Verify PDFs display correctly in admin portal

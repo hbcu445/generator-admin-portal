@@ -614,6 +614,31 @@
             document.getElementById('dashboard-page').classList.remove('hidden');
         }
 
+        function viewPDF(base64Data, title) {
+            // Open PDF in new window using data URI
+            const dataUri = `data:application/pdf;base64,${base64Data}`;
+            const newWindow = window.open();
+            if (newWindow) {
+                newWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>${title}</title>
+                            <style>
+                                body { margin: 0; }
+                                iframe { width: 100%; height: 100vh; border: none; }
+                            </style>
+                        </head>
+                        <body>
+                            <iframe src="${dataUri}"></iframe>
+                        </body>
+                    </html>
+                `);
+                newWindow.document.close();
+            } else {
+                alert('Please allow popups to view the PDF');
+            }
+        }
+
         function logout() {
             localStorage.removeItem('admin_logged_in');
             isLoggedIn = false;
@@ -751,8 +776,8 @@
                             <td>${result.score}/${result.total_questions} (${result.percentage}%)</td>
                             <td>${Math.floor(result.time_taken_seconds / 60)}</td>
                             <td><span style="color: ${result.passed ? 'green' : 'red'}; font-weight: bold;">${result.passed ? 'PASSED' : 'NOT PASSED'}</span></td>
-                            <td>${result.report_pdf ? `<a href="${result.report_pdf}" target="_blank" rel="noopener noreferrer" class="btn-small">View Report</a>` : '<span style="color: #999">N/A</span>'}</td>
-                            <td>${result.certificate_pdf && result.passed ? `<a href="${result.certificate_pdf}" target="_blank" rel="noopener noreferrer" class="btn-small">View Certificate</a>` : '<span style="color: #999">N/A</span>'}</td>
+                            <td>${result.report_pdf ? `<button onclick="viewPDF('${result.report_pdf}', '${result.applicant_name} Report')" class="btn-small">View Report</button>` : '<span style="color: #999">N/A</span>'}</td>
+                            <td>${result.certificate_pdf && result.passed ? `<button onclick="viewPDF('${result.certificate_pdf}', '${result.applicant_name} Certificate')" class="btn-small">View Certificate</button>` : '<span style="color: #999">N/A</span>'}</td>
                         </tr>
                     `).join('');
                 }
