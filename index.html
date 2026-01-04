@@ -751,8 +751,8 @@
                             <td>${result.score}/${result.total_questions} (${result.percentage}%)</td>
                             <td>${Math.floor(result.time_taken_seconds / 60)}</td>
                             <td><span style="color: ${result.passed ? 'green' : 'red'}; font-weight: bold;">${result.passed ? 'PASSED' : 'NOT PASSED'}</span></td>
-                            <td>${result.report_pdf ? `<a href="${result.report_pdf}" target="_blank" rel="noopener noreferrer" class="btn-small">View Report</a>` : '<span style="color: #999">N/A</span>'}</td>
-                            <td>${result.certificate_pdf && result.passed ? `<a href="${result.certificate_pdf}" target="_blank" rel="noopener noreferrer" class="btn-small">View Certificate</a>` : '<span style="color: #999">N/A</span>'}</td>
+                            <td>${result.report_pdf ? `<button onclick="viewPDF('${result.report_pdf}', '${result.applicant_name} Report')" class="btn-small">View Report</button>` : '<span style="color: #999">N/A</span>'}</td>
+                            <td>${result.certificate_pdf && result.passed ? `<button onclick="viewPDF('${result.certificate_pdf}', '${result.applicant_name} Certificate')" class="btn-small">View Certificate</button>` : '<span style="color: #999">N/A</span>'}</td>
                         </tr>
                     `).join('');
                 }
@@ -1286,6 +1286,41 @@
             loadScoringLevels();
             updateScoringPreview();
         });
+
+        // Function to view base64 PDF
+        function viewPDF(base64Data, title) {
+            // Check if it's a URL or base64
+            if (base64Data.startsWith('http://') || base64Data.startsWith('https://')) {
+                // It's a URL, open directly
+                window.open(base64Data, '_blank');
+            } else {
+                // It's base64, convert to blob and open
+                try {
+                    // Remove data URI prefix if present
+                    const base64String = base64Data.replace(/^data:application\/pdf;base64,/, '');
+                    
+                    // Convert base64 to binary
+                    const binaryString = atob(base64String);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    
+                    // Create blob and URL
+                    const blob = new Blob([bytes], { type: 'application/pdf' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    // Open in new window
+                    const win = window.open(url, '_blank');
+                    if (win) {
+                        win.document.title = title;
+                    }
+                } catch (error) {
+                    console.error('Error viewing PDF:', error);
+                    alert('Error opening PDF. The file may be corrupted.');
+                }
+            }
+        }
     </script>
 </body>
 </html>
