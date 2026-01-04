@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './index.css'
+import { sendTestResultEmail } from './emailService'
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://nnaakuspoqjdyzheklyb.supabase.co'
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY
@@ -21,6 +22,8 @@ export default function App() {
   const [newAdminRole, setNewAdminRole] = useState('admin')
   const [newAdminBranch, setNewAdminBranch] = useState('')
   const [token, setToken] = useState(localStorage.getItem('auth_token'))
+  const [processedResults, setProcessedResults] = useState(new Set())
+  const pollingInterval = useRef(null)
 
   useEffect(() => {
     if (token) {
@@ -30,6 +33,18 @@ export default function App() {
       loadResults()
       loadQuestions()
       loadAdminUsers()
+      
+      // Start polling for new results every 30 seconds
+      pollingInterval.current = setInterval(() => {
+        checkForNewResults()
+      }, 30000)
+    }
+    
+    // Cleanup interval on unmount
+    return () => {
+      if (pollingInterval.current) {
+        clearInterval(pollingInterval.current)
+      }
     }
   }, [token])
 
@@ -132,8 +147,60 @@ export default function App() {
       })
       const data = await response.json()
       setResults(data || [])
+      
+      // Mark all existing results as processed (don't send emails for old results)
+      if (processedResults.size === 0 && data.length > 0) {
+        const existingIds = new Set(data.map(r => r.id))
+        setProcessedResults(existingIds)
+        console.log(`✅ Marked ${existingIds.size} existing results as processed`)
+      }
     } catch (err) {
       console.error('Error loading results:', err)
+    }
+  }
+
+  const checkForNewResults = async () => {
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/results?order=created_at.desc`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      })
+      const data = await response.json()
+      
+      // Check for new results that haven't been processed
+      for (const result of data) {
+        if (!processedResults.has(result.id)) {
+          console.log(`📧 New result detected: ${result.applicant_name} (ID: ${result.id})`)
+          
+          // Find branch manager email
+          const branchManager = adminUsers.find(
+            admin => admin.branch_location === result.branch && admin.role === 'admin'
+          )
+          const branchManagerEmail = branchManager?.email || null
+          
+          if (branchManagerEmail) {
+            console.log(`✅ Branch manager found: ${branchManagerEmail}`)
+          } else {
+            console.log(`⚠️ No branch manager found for ${result.branch}`)
+          }
+          
+          // Send email
+          const emailSent = await sendTestResultEmail(result, branchManagerEmail)
+          
+          if (emailSent) {
+            // Mark as processed
+            setProcessedResults(prev => new Set([...prev, result.id]))
+            console.log(`✅ Email sent for result ID: ${result.id}`)
+          }
+        }
+      }
+      
+      // Update results display
+      setResults(data || [])
+    } catch (err) {
+      console.error('Error checking for new results:', err)
     }
   }
 
