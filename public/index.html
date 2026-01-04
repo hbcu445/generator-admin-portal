@@ -260,9 +260,7 @@
             <h3 style="margin-bottom: 20px; color: #3b82f6;">Admin Dashboard</h3>
             <nav>
                 <button class="active" onclick="switchTab('dashboard')">Dashboard</button>
-                <button onclick="switchTab('applicants')">Applicants</button>
                 <button onclick="switchTab('sessions')">Test Sessions</button>
-                <button onclick="switchTab('results')">Results</button>
                 <button onclick="switchTab('questions')">Questions</button>
                 <button onclick="switchTab('scoring')">Scoring</button>
                 <button onclick="switchTab('settings')">Settings</button>
@@ -299,58 +297,27 @@
                 </div>
             </div>
 
-            <!-- Applicants Tab -->
-            <div id="applicants-tab" class="hidden">
-                <h2>Applicants</h2>
+            <!-- Sessions Tab -->
+            <div id="sessions-tab">
+                <h2>Test Sessions</h2>
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Branch</th>
-                            <th>Test Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="applicants-list">
-                        <tr><td colspan="6">Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Sessions Tab -->
-            <div id="sessions-tab" class="hidden">
-                <h2>Test Sessions</h2>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Session ID</th>
-                            <th>Applicant</th>
-                            <th>Status</th>
-                            <th>Started</th>
+                            <th>Location</th>
+                            <th>Level</th>
+                            <th>Date</th>
+                            <th>Score</th>
+                            <th>Time (min)</th>
+                            <th>Passed</th>
+                            <th>Report</th>
+                            <th>Certificate</th>
                         </tr>
                     </thead>
                     <tbody id="sessions-list">
-                        <tr><td colspan="4">Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Results Tab -->
-            <div id="results-tab" class="hidden">
-                <h2>Test Results</h2>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Applicant</th>
-                            <th>Score</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="results-list">
-                        <tr><td colspan="4">Loading...</td></tr>
+                        <tr><td colspan="11">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -761,7 +728,7 @@
 
         async function loadSessions() {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/test_sessions`, {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/results?order=created_at.desc`, {
                     headers: {
                         'apikey': SUPABASE_KEY
                     }
@@ -770,20 +737,27 @@
                 const tbody = document.getElementById('sessions-list');
                 
                 if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4">No sessions found</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="11">No test results yet</td></tr>';
                 } else {
-                    tbody.innerHTML = data.map(session => `
+                    tbody.innerHTML = data.map(result => `
                         <tr>
-                            <td>${session.id || 'N/A'}</td>
-                            <td>${session.applicant_id || 'N/A'}</td>
-                            <td><span style="color: #3b82f6;">${session.status || 'Active'}</span></td>
-                            <td>${new Date(session.created_at).toLocaleDateString()}</td>
+                            <td>${result.applicant_name || 'N/A'}</td>
+                            <td>${result.applicant_email || 'N/A'}</td>
+                            <td>${result.applicant_phone || 'N/A'}</td>
+                            <td>${result.branch || 'N/A'}</td>
+                            <td>${result.skill_level || 'N/A'}</td>
+                            <td>${new Date(result.test_date).toLocaleDateString()}</td>
+                            <td>${result.score}/${result.total_questions} (${result.percentage}%)</td>
+                            <td>${Math.floor(result.time_taken_seconds / 60)}</td>
+                            <td><span style="color: ${result.passed ? 'green' : 'red'}; font-weight: bold;">${result.passed ? 'PASSED' : 'NOT PASSED'}</span></td>
+                            <td>${result.report_pdf ? `<a href="${result.report_pdf}" target="_blank" rel="noopener noreferrer" class="btn-small">View Report</a>` : '<span style="color: #999">N/A</span>'}</td>
+                            <td>${result.certificate_pdf && result.passed ? `<a href="${result.certificate_pdf}" target="_blank" rel="noopener noreferrer" class="btn-small">View Certificate</a>` : '<span style="color: #999">N/A</span>'}</td>
                         </tr>
                     `).join('');
                 }
             } catch (err) {
                 console.error('Error loading sessions:', err);
-                document.getElementById('sessions-list').innerHTML = '<tr><td colspan="4">Error loading data</td></tr>';
+                document.getElementById('sessions-list').innerHTML = '<tr><td colspan="11">Error loading data</td></tr>';
             }
         }
 

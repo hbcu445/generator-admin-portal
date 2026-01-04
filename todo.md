@@ -12,3 +12,8 @@
 - [x] Match branch manager email from Admin Users table by branch name
 - [x] Simplify email body to concise summary format
 - [ ] Configure Netlify environment variables for SendGrid
+
+## New Tasks
+- [ ] Update admin portal to show Test Sessions tab with all 11 fields: Name, Email, Phone, Location, Level, Date, Score, Time (min), Passed, Report PDF, Certificate PDF
+- [ ] Remove unnecessary tabs: Dashboard, Applicants, Results, Questions, Scoring
+- [ ] Keep only: Test Sessions and Settings tabs
