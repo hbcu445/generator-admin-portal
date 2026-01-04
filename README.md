@@ -138,3 +138,4 @@ The project is configured for deployment on Netlify or similar platforms.
 ### Support
 
 For issues or questions, refer to the Supabase documentation or contact the development team.
+# Trigger deployment
