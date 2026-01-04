@@ -279,19 +279,10 @@ export default function App() {
             Applicants
           </button>
           <button
-            className={activeTab === 'sessions' ? 'active' : ''}
-            onClick={() => {
-              setActiveTab('sessions')
-              loadSessions()
-            }}
-          >
-            Test Sessions
-          </button>
-          <button
             className={activeTab === 'results' ? 'active' : ''}
             onClick={() => setActiveTab('results')}
           >
-            Results
+            Test Results
           </button>
         </nav>
         <button className="btn logout-btn" onClick={logout}>
@@ -326,32 +317,6 @@ export default function App() {
                         Delete
                       </button>
                     </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {activeTab === 'sessions' && (
-          <div>
-            <h2>Test Sessions</h2>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Applicant</th>
-                  <th>Status</th>
-                  <th>Created</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sessions.map((session) => (
-                  <tr key={session.id}>
-                    <td>{session.id}</td>
-                    <td>{session.applicant_id || 'N/A'}</td>
-                    <td>{session.status || 'N/A'}</td>
-                    <td>{new Date(session.created_at).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>
