@@ -17,37 +17,30 @@ export async function sendTestResultEmail(result, branchManagerEmail) {
     const testDate = new Date(result.test_date).toLocaleDateString()
     
     // Email subject
-    const subject = `Generator Technician Test Results - ${applicantName}`
+    const subject = `Generator Technician Skill Test Results - ${applicantName}`
     
-    // Email body
+    // Format date and time
+    const testDateTime = new Date(result.test_date).toLocaleString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    })
+    
+    // Email body - simple and concise
     const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #1e3a8a;">Generator Technician Test Results</h2>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <p>Dear Recipient,</p>
         
-        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <p><strong>Applicant:</strong> ${applicantName}</p>
-          <p><strong>Email:</strong> ${applicantEmail}</p>
-          <p><strong>Phone:</strong> ${result.applicant_phone || 'N/A'}</p>
-          <p><strong>Branch:</strong> ${branch}</p>
-          <p><strong>Skill Level:</strong> ${skillLevel}</p>
-          <p><strong>Test Date:</strong> ${testDate}</p>
-        </div>
+        <p>${applicantName} performed the Generator Technician Skill Test and scored ${score} out of ${totalQuestions} (${percentage}%).</p>
         
-        <div style="background-color: ${passed ? '#dcfce7' : '#fee2e2'}; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: ${passed ? '#166534' : '#991b1b'};">
-            Result: ${passed ? 'PASSED' : 'NOT PASSED'}
-          </h3>
-          <p><strong>Score:</strong> ${score} / ${totalQuestions} (${percentage}%)</p>
-          <p><strong>Time Taken:</strong> ${Math.floor(result.time_taken_seconds / 60)} minutes</p>
-        </div>
+        <p>Please see attached test results${passed ? ' and certificate achieved' : ''}.</p>
         
-        <div style="margin: 20px 0;">
-          <p>Please find the test report attached${passed ? ' along with the certificate' : ''}.</p>
-        </div>
+        <p><strong>Test Date & Time:</strong> ${testDateTime}</p>
         
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">
-          <p>This is an automated email from Generator Source Test Portal.</p>
-        </div>
+        <p>Best regards,<br>Generator Source Admin</p>
       </div>
     `
     
