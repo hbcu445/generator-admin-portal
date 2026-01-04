@@ -10,7 +10,7 @@ export default function App() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState('applicants')
+  const [activeTab, setActiveTab] = useState('results')
   const [applicants, setApplicants] = useState([])
   const [sessions, setSessions] = useState([])
   const [results, setResults] = useState([])
@@ -270,15 +270,6 @@ export default function App() {
       <div className="sidebar">
         <nav>
           <button
-            className={activeTab === 'applicants' ? 'active' : ''}
-            onClick={() => {
-              setActiveTab('applicants')
-              loadApplicants()
-            }}
-          >
-            Applicants
-          </button>
-          <button
             className={activeTab === 'results' ? 'active' : ''}
             onClick={() => setActiveTab('results')}
           >
@@ -291,39 +282,6 @@ export default function App() {
       </div>
 
       <div className="main-content">
-        {activeTab === 'applicants' && (
-          <div>
-            <h2>Applicants</h2>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Branch</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {applicants.map((app) => (
-                  <tr key={app.id}>
-                    <td>{app.name || 'N/A'}</td>
-                    <td>{app.email || 'N/A'}</td>
-                    <td>{app.branch || 'N/A'}</td>
-                    <td>
-                      <button
-                        className="btn-small"
-                        onClick={() => deleteApplicant(app.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
         {activeTab === 'results' && (
           <div>
             <h2>Test Results</h2>
