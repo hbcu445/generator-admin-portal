@@ -361,8 +361,67 @@ export default function App() {
 
         {activeTab === 'results' && (
           <div>
-            <h2>Results</h2>
-            <p>Results dashboard coming soon...</p>
+            <h2>Test Results</h2>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Location</th>
+                  <th>Level</th>
+                  <th>Date</th>
+                  <th>Score</th>
+                  <th>Time (min)</th>
+                  <th>Passed</th>
+                  <th>Report</th>
+                  <th>Certificate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.length === 0 ? (
+                  <tr>
+                    <td colSpan="11" style={{textAlign: 'center'}}>No test results yet</td>
+                  </tr>
+                ) : (
+                  results.map((result) => (
+                    <tr key={result.id}>
+                      <td>{result.applicant_name || 'N/A'}</td>
+                      <td>{result.applicant_email || 'N/A'}</td>
+                      <td>{result.applicant_phone || 'N/A'}</td>
+                      <td>{result.branch || 'N/A'}</td>
+                      <td>{result.skill_level || 'N/A'}</td>
+                      <td>{result.test_date ? new Date(result.test_date).toLocaleDateString() : 'N/A'}</td>
+                      <td>{result.score}/{result.total_questions} ({result.percentage}%)</td>
+                      <td>{result.time_taken_seconds ? Math.floor(result.time_taken_seconds / 60) : 'N/A'}</td>
+                      <td>
+                        <span style={{color: result.passed ? 'green' : 'red', fontWeight: 'bold'}}>
+                          {result.passed ? 'PASSED' : 'NOT PASSED'}
+                        </span>
+                      </td>
+                      <td>
+                        {result.report_pdf ? (
+                          <a href={result.report_pdf} target="_blank" rel="noopener noreferrer" className="btn-small">
+                            View Report
+                          </a>
+                        ) : (
+                          <span style={{color: '#999'}}>N/A</span>
+                        )}
+                      </td>
+                      <td>
+                        {result.certificate_pdf && result.passed ? (
+                          <a href={result.certificate_pdf} target="_blank" rel="noopener noreferrer" className="btn-small">
+                            View Certificate
+                          </a>
+                        ) : (
+                          <span style={{color: '#999'}}>N/A</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
