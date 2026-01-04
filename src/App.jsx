@@ -324,8 +324,12 @@ export default function App() {
                       </td>
                       <td>
                         {result.report_pdf ? (
-                          <a href={result.report_pdf} target="_blank" rel="noopener noreferrer" className="btn-small">
-                            View Report
+                          <a 
+                            href={result.report_pdf} 
+                            download={`${result.applicant_name.replace(/\s+/g, '_')}_Test_Report.pdf`}
+                            className="btn-small"
+                          >
+                            Download Report
                           </a>
                         ) : (
                           <span style={{color: '#999'}}>N/A</span>
@@ -333,8 +337,12 @@ export default function App() {
                       </td>
                       <td>
                         {result.certificate_pdf && result.passed ? (
-                          <a href={result.certificate_pdf} target="_blank" rel="noopener noreferrer" className="btn-small">
-                            View Certificate
+                          <a 
+                            href={result.certificate_pdf} 
+                            download={`${result.applicant_name.replace(/\s+/g, '_')}_Certificate.pdf`}
+                            className="btn-small"
+                          >
+                            Download Certificate
                           </a>
                         ) : (
                           <span style={{color: '#999'}}>N/A</span>
