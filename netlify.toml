@@ -1,5 +1,7 @@
 [build]
-  command = ""
+  publish = "."
+  command = "echo 'No build needed - deploying static HTML'"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
