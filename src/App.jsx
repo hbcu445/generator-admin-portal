@@ -34,10 +34,10 @@ export default function App() {
       loadQuestions()
       loadAdminUsers()
       
-      // Start polling for new results every 30 seconds
+      // Start polling for new results every 15 minutes
       pollingInterval.current = setInterval(() => {
         checkForNewResults()
-      }, 30000)
+      }, 900000) // 15 minutes = 900,000 milliseconds
     }
     
     // Cleanup interval on unmount
