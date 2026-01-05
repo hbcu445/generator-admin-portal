@@ -761,7 +761,7 @@
                             <td><span style="color: ${result.passed ? 'green' : 'red'}; font-weight: bold;">${result.passed ? 'PASSED' : 'NOT PASSED'}</span></td>
                             <td>${result.report_pdf ? `<button onclick="viewPDFFromButton(this, 'Test Report')" data-pdf="${result.report_pdf.replace(/"/g, '&quot;')}" class="btn-small">View Report</button>` : '<span style="color: #999">N/A</span>'}</td>
                             <td>${result.certificate_pdf && result.passed ? `<button onclick="viewPDFFromButton(this, 'Certificate')" data-pdf="${result.certificate_pdf.replace(/"/g, '&quot;')}" class="btn-small">View Certificate</button>` : '<span style="color: #999">N/A</span>'}</td>
-                            <td>${isMaster ? `<button onclick="toggleHideSession('${result.id}', ${result.hidden || false})" class="btn-small" style="background: ${result.hidden ? '#10b981' : '#f59e0b'};">${result.hidden ? 'Hidden' : 'Hide'}</button>` : '-'}</td>
+                            <td>${isMaster ? `<button onclick="toggleHideSession('${result.id}', ${result.hidden || false})" class="btn-small" style="background: ${result.hidden ? '#ef4444' : '#10b981'};">${result.hidden ? 'Hidden' : 'Hide'}</button>` : '-'}</td>
                         </tr>
                     `).join('');
                 }
