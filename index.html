@@ -640,16 +640,6 @@
 
         async function loadDashboardData() {
             try {
-                // Load applicants count
-                const applicantsRes = await fetch(`${SUPABASE_URL}/rest/v1/applicants?select=count()`, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Accept': 'application/vnd.pgrst.object+json'
-                    }
-                });
-                const applicantsCount = applicantsRes.headers.get('content-range')?.split('/')[1] || '0';
-                document.getElementById('total-applicants').textContent = applicantsCount;
-
                 // Load sessions count
                 const sessionsRes = await fetch(`${SUPABASE_URL}/rest/v1/test_sessions?select=count()`, {
                     headers: {
@@ -660,8 +650,8 @@
                 const sessionsCount = sessionsRes.headers.get('content-range')?.split('/')[1] || '0';
                 document.getElementById('active-sessions').textContent = sessionsCount;
 
-                // Load results count
-                const resultsRes = await fetch(`${SUPABASE_URL}/rest/v1/results?select=count()`, {
+                // Load results count (only non-hidden)
+                const resultsRes = await fetch(`${SUPABASE_URL}/rest/v1/results?select=count()&hidden=eq.false`, {
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Accept': 'application/vnd.pgrst.object+json'
@@ -669,6 +659,16 @@
                 });
                 const resultsCount = resultsRes.headers.get('content-range')?.split('/')[1] || '0';
                 document.getElementById('completed-tests').textContent = resultsCount;
+                
+                // Load unique applicants count from non-hidden results
+                const applicantsFromResults = await fetch(`${SUPABASE_URL}/rest/v1/results?select=applicant_email&hidden=eq.false`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY
+                    }
+                });
+                const resultsData = await applicantsFromResults.json();
+                const uniqueApplicants = new Set(resultsData.map(r => r.applicant_email).filter(e => e)).size;
+                document.getElementById('total-applicants').textContent = uniqueApplicants;
             } catch (err) {
                 console.error('Error loading dashboard data:', err);
             }
