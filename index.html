@@ -1252,11 +1252,30 @@
 
         // Scoring Management Functions
         let scoringLevels = [
-            { level: 1, level_name: 'Beginner', min_percentage: 25, max_percentage: 40, description: 'Basic understanding' },
-            { level: 2, level_name: 'Advanced', min_percentage: 41, max_percentage: 59, description: 'Intermediate knowledge' },
-            { level: 3, level_name: 'Pro', min_percentage: 60, max_percentage: 85, description: 'Advanced proficiency' },
-            { level: 4, level_name: 'Master', min_percentage: 86, max_percentage: 100, description: 'Expert-level knowledge' }
+            { level: 1, level_name: 'Beginner', min_percentage: 25, max_percentage: 40, description: 'Basic understanding', medal_type: 'Bronze' },
+            { level: 2, level_name: 'Advanced', min_percentage: 41, max_percentage: 59, description: 'Intermediate knowledge', medal_type: 'Silver' },
+            { level: 3, level_name: 'Pro', min_percentage: 60, max_percentage: 85, description: 'Advanced proficiency', medal_type: 'Gold' },
+            { level: 4, level_name: 'Master', min_percentage: 86, max_percentage: 100, description: 'Expert-level knowledge', medal_type: 'Diamond' }
         ];
+
+        // Load scoring levels from Supabase
+        async function fetchScoringLevels() {
+            try {
+                const { data, error } = await supabase
+                    .from('scoring_config')
+                    .select('*')
+                    .order('level', { ascending: true });
+                
+                if (error) throw error;
+                
+                if (data && data.length > 0) {
+                    scoringLevels = data;
+                }
+            } catch (err) {
+                console.error('Error fetching scoring levels:', err);
+                // Keep default values if fetch fails
+            }
+        }
 
         function loadScoringLevels() {
             const container = document.getElementById('scoring-levels-container');
@@ -1312,18 +1331,42 @@
             `).join('');
         }
 
-        function saveScoringLevels() {
-            // Save to localStorage for now
-            localStorage.setItem('scoringLevels', JSON.stringify(scoringLevels));
+        async function saveScoringLevels() {
             const messageDiv = document.getElementById('scoring-message');
-            messageDiv.innerHTML = '<span style="color: #10b981;">Scoring configuration saved successfully!</span>';
-            setTimeout(() => {
-                messageDiv.innerHTML = '';
-            }, 3000);
+            messageDiv.innerHTML = '<span style="color: #3b82f6;">Saving...</span>';
+            
+            try {
+                // Update each level in Supabase
+                for (const level of scoringLevels) {
+                    const { error } = await supabase
+                        .from('scoring_config')
+                        .update({
+                            min_percentage: level.min_percentage,
+                            max_percentage: level.max_percentage,
+                            description: level.description,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('level', level.level);
+                    
+                    if (error) throw error;
+                }
+                
+                messageDiv.innerHTML = '<span style="color: #10b981;">✓ Scoring configuration saved successfully!</span>';
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                }, 3000);
+            } catch (err) {
+                console.error('Error saving scoring levels:', err);
+                messageDiv.innerHTML = '<span style="color: #ef4444;">✗ Error saving configuration</span>';
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                }, 3000);
+            }
         }
 
         // Initialize scoring levels on page load
-        window.addEventListener('load', () => {
+        window.addEventListener('load', async () => {
+            await fetchScoringLevels();
             loadScoringLevels();
             updateScoringPreview();
         });
