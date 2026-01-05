@@ -732,7 +732,7 @@
             try {
                 // Get current user role from localStorage
                 const adminRole = localStorage.getItem('admin_role');
-                const isMaster = adminRole === 'MASTER';
+                const isMaster = adminRole && adminRole.toUpperCase() === 'MASTER';
                 
                 // Filter hidden results for non-master users
                 const filterParam = isMaster ? '' : '&hidden=eq.false';
