@@ -754,7 +754,7 @@
                             <td><span style="color: ${result.passed ? 'green' : 'red'}; font-weight: bold;">${result.passed ? 'PASSED' : 'NOT PASSED'}</span></td>
                             <td>${result.report_pdf ? `<button onclick="viewPDF('${result.report_pdf}', '${result.applicant_name} Report')" class="btn-small">View Report</button>` : '<span style="color: #999">N/A</span>'}</td>
                             <td>${result.certificate_pdf && result.passed ? `<button onclick="viewPDF('${result.certificate_pdf}', '${result.applicant_name} Certificate')" class="btn-small">View Certificate</button>` : '<span style="color: #999">N/A</span>'}</td>
-                            <td><button onclick="deleteTestSession(${result.id}, '${result.applicant_name}')" class="btn-small" style="background: #ef4444;">Delete</button></td>
+                            <td><button onclick="deleteTestSession(${result.id})" class="btn-small" style="background: #ef4444;">Delete</button></td>
                         </tr>
                     `).join('');
                 }
@@ -1211,8 +1211,8 @@
             }
         }
 
-        async function deleteTestSession(id, name) {
-            if (!confirm(`Are you sure you want to delete the test session for ${name}?\n\nThis action cannot be undone.`)) {
+        async function deleteTestSession(id) {
+            if (!confirm(`Are you sure you want to delete this test session?\n\nThis action cannot be undone.`)) {
                 return;
             }
             
