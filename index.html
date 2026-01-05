@@ -752,8 +752,8 @@
                             <td>${result.score}/${result.total_questions} (${result.percentage}%)</td>
                             <td>${Math.floor(result.time_taken_seconds / 60)}</td>
                             <td><span style="color: ${result.passed ? 'green' : 'red'}; font-weight: bold;">${result.passed ? 'PASSED' : 'NOT PASSED'}</span></td>
-                            <td>${result.report_pdf ? `<button onclick="viewPDF('${result.report_pdf}', '${result.applicant_name} Report')" class="btn-small">View Report</button>` : '<span style="color: #999">N/A</span>'}</td>
-                            <td>${result.certificate_pdf && result.passed ? `<button onclick="viewPDF('${result.certificate_pdf}', '${result.applicant_name} Certificate')" class="btn-small">View Certificate</button>` : '<span style="color: #999">N/A</span>'}</td>
+                            <td>${result.report_pdf ? `<button onclick="viewPDF('${result.report_pdf}', 'Test Report')" class="btn-small">View Report</button>` : '<span style="color: #999">N/A</span>'}</td>
+                            <td>${result.certificate_pdf && result.passed ? `<button onclick="viewPDF('${result.certificate_pdf}', 'Certificate')" class="btn-small">View Certificate</button>` : '<span style="color: #999">N/A</span>'}</td>
                             <td><button onclick="deleteTestSession(${result.id})" class="btn-small" style="background: #ef4444;">Delete</button></td>
                         </tr>
                     `).join('');
