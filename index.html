@@ -752,8 +752,8 @@
                             <td>${result.score}/${result.total_questions} (${result.percentage}%)</td>
                             <td>${Math.floor(result.time_taken_seconds / 60)}</td>
                             <td><span style="color: ${result.passed ? 'green' : 'red'}; font-weight: bold;">${result.passed ? 'PASSED' : 'NOT PASSED'}</span></td>
-                            <td>${result.report_pdf ? `<button onclick="viewPDF('${result.report_pdf}', 'Test Report')" class="btn-small">View Report</button>` : '<span style="color: #999">N/A</span>'}</td>
-                            <td>${result.certificate_pdf && result.passed ? `<button onclick="viewPDF('${result.certificate_pdf}', 'Certificate')" class="btn-small">View Certificate</button>` : '<span style="color: #999">N/A</span>'}</td>
+                            <td>${result.report_pdf ? `<button onclick="viewPDFFromButton(this, 'Test Report')" data-pdf="${result.report_pdf.replace(/"/g, '&quot;')}" class="btn-small">View Report</button>` : '<span style="color: #999">N/A</span>'}</td>
+                            <td>${result.certificate_pdf && result.passed ? `<button onclick="viewPDFFromButton(this, 'Certificate')" data-pdf="${result.certificate_pdf.replace(/"/g, '&quot;')}" class="btn-small">View Certificate</button>` : '<span style="color: #999">N/A</span>'}</td>
                             <td><button onclick="deleteTestSession(${result.id})" class="btn-small" style="background: #ef4444;">Delete</button></td>
                         </tr>
                     `).join('');
@@ -1316,6 +1316,11 @@
         });
 
         // Function to view base64 PDF
+        function viewPDFFromButton(button, title) {
+            const base64Data = button.getAttribute('data-pdf');
+            viewPDF(base64Data, title);
+        }
+
         function viewPDF(base64Data, title) {
             // Check if it's a URL or base64
             if (base64Data.startsWith('http://') || base64Data.startsWith('https://')) {
