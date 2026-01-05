@@ -617,6 +617,8 @@
 
         function logout() {
             localStorage.removeItem('admin_logged_in');
+            localStorage.removeItem('admin_email');
+            localStorage.removeItem('admin_role');
             isLoggedIn = false;
             document.getElementById('login-page').classList.remove('hidden');
             document.getElementById('dashboard-page').classList.add('hidden');
