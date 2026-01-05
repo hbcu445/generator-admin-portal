@@ -315,10 +315,11 @@
                             <th>Passed</th>
                             <th>Report</th>
                             <th>Certificate</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="sessions-list">
-                        <tr><td colspan="11">Loading...</td></tr>
+                        <tr><td colspan="12">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -639,6 +640,36 @@
             }
         }
 
+        async function deleteTestResult(resultId, applicantName) {
+            if (!confirm(`Are you sure you want to delete the test result for "${applicantName}"?\n\nThis action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/results?id=eq.${resultId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok || response.status === 204) {
+                    alert(`Test result for "${applicantName}" has been deleted successfully.`);
+                    // Reload the sessions table
+                    loadSessions();
+                } else {
+                    const error = await response.text();
+                    console.error('Delete error:', error);
+                    alert('Failed to delete test result. Please try again.');
+                }
+            } catch (err) {
+                console.error('Error deleting test result:', err);
+                alert('An error occurred while deleting the test result.');
+            }
+        }
+
         function logout() {
             localStorage.removeItem('admin_logged_in');
             isLoggedIn = false;
@@ -763,7 +794,7 @@
                 const tbody = document.getElementById('sessions-list');
                 
                 if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="11">No test results yet</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="12">No test results yet</td></tr>';
                 } else {
                     tbody.innerHTML = data.map(result => `
                         <tr>
@@ -778,12 +809,13 @@
                             <td><span style="color: ${result.passed ? 'green' : 'red'}; font-weight: bold;">${result.passed ? 'PASSED' : 'NOT PASSED'}</span></td>
                             <td>${result.report_pdf ? `<button onclick="viewPDF('${result.report_pdf}', '${result.applicant_name} Report')" class="btn-small">View Report</button>` : '<span style="color: #999">N/A</span>'}</td>
                             <td>${result.certificate_pdf && result.passed ? `<button onclick="viewPDF('${result.certificate_pdf}', '${result.applicant_name} Certificate')" class="btn-small">View Certificate</button>` : '<span style="color: #999">N/A</span>'}</td>
+                            <td><button onclick="deleteTestResult(${result.id}, '${result.applicant_name}')" class="btn-delete" style="background: #ef4444; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Delete</button></td>
                         </tr>
                     `).join('');
                 }
             } catch (err) {
                 console.error('Error loading sessions:', err);
-                document.getElementById('sessions-list').innerHTML = '<tr><td colspan="11">Error loading data</td></tr>';
+                document.getElementById('sessions-list').innerHTML = '<tr><td colspan="12">Error loading data</td></tr>';
             }
         }
 
